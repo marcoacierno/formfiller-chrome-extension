@@ -2,6 +2,7 @@ const forms = [...document.querySelectorAll('form')];
 const fillers = [
     window.__FORMFILLER__personFill,
     window.__FORMFILLER__loremFill,
+    window.__FORMFILLER__internetFill,
 ];
 
 

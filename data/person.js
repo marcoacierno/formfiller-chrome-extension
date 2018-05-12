@@ -38,7 +38,9 @@ const fillIfPhoneNumber = input => {
 };
 
 
-const firstName = [
+window.__FORMFILLER__person = { data: {} };
+
+window.__FORMFILLER__person.data['firstName'] = [
     // male
     'David', 'Paul', 'Christopher', 'Thomas', 'John', 'Mark', 'James',
     'Stephen', 'Andrew', 'Jack', 'Michael', 'Daniel', 'Peter', 'Richard',

@@ -19,6 +19,7 @@
             "js": [
                 "data/person.js",
                 "data/lorem.js",
+                "data/internet.js",
                 "filler.js"
             ]
         }
