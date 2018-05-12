@@ -18,6 +18,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 const fillForm = (formId, onComplete) => {
+    const form = document.getElementById(formId);
     const inputs = [...document.querySelectorAll(`#${formId} input, #${formId} textarea`)];
     inputs.forEach(input => {
         if (skipInput(input)) {
@@ -25,7 +26,7 @@ const fillForm = (formId, onComplete) => {
         }
 
         for (const filler of fillers) {
-            const data = filler(input);
+            const data = filler(input, form);
 
             if (data !== null) {
                 console.log('put', data, 'into', input);

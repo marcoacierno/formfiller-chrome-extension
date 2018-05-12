@@ -1,4 +1,4 @@
-window.__FORMFILLER__internetFill = input => {
+window.__FORMFILLER__internetFill = (input, form) => {
     const inputType = input.type;
     const inputName = input.name.toLocaleLowerCase();
     const autocomplete = input.autocomplete;
@@ -9,8 +9,65 @@ window.__FORMFILLER__internetFill = input => {
         return `${randomFirstName}@${randomProvider}`;
     }
 
+    let value = null;
+
+    if ((value = fillIfSlug(input, form)) !== null) return value;
+
     return null;
 };
+
+const fillIfSlug = (input, form) => {
+    if (input.type !== 'text' || input.name.toLocaleLowerCase() !== 'slug') {
+        return null;
+    }
+
+    const djangoAutocompleteScript = document.querySelector('script[id="django-admin-prepopulated-fields-constants"]');
+
+    /* try to understand if the following field is based on some other field (django) */
+    console.log('djangoAutocompleteScript', djangoAutocompleteScript)
+    if (djangoAutocompleteScript) {
+        const autocompleteFields = JSON.parse(djangoAutocompleteScript.getAttribute('data-prepopulated-fields'));
+        for (const field of autocompleteFields) {
+            console.log('field id', field.id, 'input id', input.id)
+            if (field.id.slice(1) !== input.id) {
+                continue;
+            }
+
+            // todo: support for multiple dependencies
+            const dependencyId = field.dependency_ids[0];
+            const dependencyInput = form.querySelector(`input${dependencyId}`);
+            return slugify(dependencyInput.value);
+        }
+    }
+
+    let words = '';
+    for (let i = 0; i < 5; i++) {
+        const word = window.__FORMFILLER__getRandom(window.__FORMFILLER__lorem.data['words']);
+        words = `${words} ${word}`;
+    }
+
+    return slugify(words);
+};
+
+const slugify = str => {
+    // https://gist.github.com/codeguy/6684588
+    str = str.replace(/^\s+|\s+$/g, ''); // trim
+    str = str.toLowerCase();
+
+    // remove accents, swap ñ for n, etc
+    var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
+    var to   = "aaaaeeeeiiiioooouuuunc------";
+    for (var i=0, l=from.length ; i<l ; i++) {
+        str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+    }
+
+    str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+        .replace(/\s+/g, '-') // collapse whitespace and replace by -
+        .replace(/-+/g, '-'); // collapse dashes
+
+    return str;
+}
+
 
 
 const EMAIL_PROVIDERS = [
