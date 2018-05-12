@@ -8,7 +8,7 @@ window.__FORMFILLER__personFill = input => {
     let value;
 
     if ((value = fillIfFirstName(input)) !== null) return value;
-    if ((value = fillIfPhoneNumber(input) !== null)) return value;
+    if ((value = fillIfPhoneNumber(input)) !== null) return value;
 
     return null;
 };
@@ -135,5 +135,5 @@ const phoneFormats = [
 
 const generatePhoneNumber = () => {
     const phone = window.__FORMFILLER__getRandom(phoneFormats);
-    //
+    return phone.replace(/#/g, (match, p1, offset, string) => Math.floor(Math.random() * 9));
 };
